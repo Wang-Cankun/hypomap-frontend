@@ -1,0 +1,36 @@
+{
+  "name": "hypomap",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0 --port 9121",
+    "start": "vite preview --host 0.0.0.0 --port 9121",
+    "deploy": "bash deploy.sh",
+    "pm2:start": "pm2 start ecosystem.config.cjs",
+    "pm2:stop": "pm2 stop hypomap-frontend",
+    "pm2:restart": "pm2 restart hypomap-frontend --update-env",
+    "pm2:logs": "pm2 logs hypomap-frontend",
+    "pm2:status": "pm2 status hypomap-frontend"
+  },
+  "dependencies": {
+    "@heroicons/vue": "^2.2.0",
+    "echarts": "^6.0.0",
+    "highlight.js": "^11.11.1",
+    "marked": "^4.3.0",
+    "vis-network": "^10.0.2",
+    "vue": "^3.5.13",
+    "vue-echarts": "^8.0.1",
+    "vue-router": "^4.5.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.3",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.18",
+    "vite": "^6.2.4",
+    "vite-plugin-vue-devtools": "^7.7.2"
+  }
+}
