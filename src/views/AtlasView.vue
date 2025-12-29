@@ -1199,7 +1199,7 @@ import AIChatSection from "@/components/AIChatSection.vue";
 const props = defineProps({
   defaultDatasetId: {
     type: String,
-    default: "human_subset",
+    default: "hypomap_demo",
   },
 });
 
@@ -1220,14 +1220,14 @@ use([
 
 const route = useRoute();
 const initialDatasetId =
-  props.defaultDatasetId || route.params.id || "human_subset";
+  props.defaultDatasetId || route.params.id || "hypomap_demo";
 
 // Atlas mode is always true in this view
 const isAtlasMode = computed(() => true);
 
 // Computed properties for Atlas vs Analysis mode
 const pageTitle = computed(() =>
-  isAtlasMode.value ? "Human Atlas" : "Single-Cell Analysis:"
+  isAtlasMode.value ? "HypoMap Analysis" : "Single-Cell Analysis:"
 );
 const backLink = computed(() => (isAtlasMode.value ? "/" : "/datasets"));
 const backLinkText = computed(() =>

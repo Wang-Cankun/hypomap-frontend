@@ -169,6 +169,9 @@ onUnmounted(() => {
   if (cleanup) cleanup();
   if (animationFrameId) cancelAnimationFrame(animationFrameId);
 });
+
+// Dynamic year
+const currentYear = new Date().getFullYear();
 </script>
 
 <template>
@@ -203,14 +206,14 @@ onUnmounted(() => {
           class="text-lg sm:text-xl lg:text-2xl font-semibold text-secondary-700 leading-relaxed mb-4 animate-slide-up"
           style="animation-delay: 100ms"
         >
-          AI-Powered Single-Cell Analysis & Hypothesis Generation
+          Multilevel Contrastive Learning for Uncovering Hidden Biological Hypotheses
         </h2>
 
         <p
-          class="text-base text-secondary-500 max-w-xl mx-auto leading-relaxed mb-8 animate-slide-up"
+          class="text-base text-secondary-500 max-w-2xl mx-auto leading-relaxed mb-8 animate-slide-up"
           style="animation-delay: 150ms"
         >
-          Explore your scRNA-seq data with interactive UMAP visualization, cell-cell communication networks, and AI-assisted biological insights.
+          A contrastive learning framework that transforms single-cell transcriptome data into a multi-condition hypothesis discovery system, enabling systematic identification of latent, testable hypotheses.
         </p>
 
         <!-- Buttons -->
@@ -219,8 +222,17 @@ onUnmounted(() => {
           style="animation-delay: 200ms"
         >
           <router-link
-            to="/atlas/hypomap_demo"
+            to="/upload"
             class="inline-flex items-center justify-center space-x-2 px-8 py-4 rounded-xl bg-gradient-to-r from-rose-500 to-pink-500 text-white font-semibold shadow-xl shadow-pink-200 hover:shadow-pink-300 hover:-translate-y-1 transition-all duration-300"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+            </svg>
+            <span>Upload Data</span>
+          </router-link>
+          <router-link
+            to="/atlas/hypomap_demo"
+            class="inline-flex items-center justify-center space-x-2 px-8 py-4 rounded-xl bg-white text-secondary-700 font-medium border border-secondary-200 shadow-sm hover:bg-secondary-50 hover:border-secondary-300 transition-all duration-200"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
@@ -268,7 +280,7 @@ onUnmounted(() => {
         </div>
 
         <div class="text-sm text-secondary-400">
-          &copy; 2024 HypoMap
+          &copy; {{ currentYear }} HypoMap
         </div>
       </div>
     </footer>
