@@ -6,4 +6,4 @@ export NVM_DIR="$HOME/.nvm"
 nvm use 22
 
 # Run vite preview
-exec ./node_modules/.bin/vite preview --host 0.0.0.0 --port 9118
+exec ./node_modules/.bin/vite preview --host 0.0.0.0 --port 9121

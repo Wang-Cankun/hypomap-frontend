@@ -2,8 +2,8 @@ module.exports = {
   apps: [
     {
       name: "hypomap-frontend",
-      script: "npm",
-      args: "run preview",
+      script: "./start.sh",
+      interpreter: "/bin/bash",
       cwd: "/server/nodejs/hypomap-frontend",
       env: {
         NODE_ENV: "production",
