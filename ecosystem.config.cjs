@@ -1,19 +1,18 @@
 module.exports = {
   apps: [
     {
-      name: "sskind-frontend",
-      // Use bash script that loads nvm and correct Node version
-      script: "./start.sh",
-      cwd: "./",
-      interpreter: "/bin/bash",
+      name: "hypomap-frontend",
+      script: "npm",
+      args: "run preview",
+      cwd: "/server/nodejs/hypomap-frontend",
       env: {
         NODE_ENV: "production",
-        PORT: 9118,
+        PORT: 9121,
       },
       instances: 1,
       autorestart: true,
       watch: false,
-      max_memory_restart: "1G",
+      max_memory_restart: "500M",
       // Logs
       log_file: "./logs/combined.log",
       out_file: "./logs/out.log",
@@ -31,4 +30,18 @@ module.exports = {
       listen_timeout: 10000,
     },
   ],
+
+  deploy: {
+    production: {
+      user: "wan268",
+      host: "bmblx.bmi.osumc.edu",
+      ref: "origin/main",
+      repo: "git@github.com:Wang-Cankun/hypomap-frontend.git",
+      path: "/server/nodejs",
+      "pre-deploy-local": "",
+      "post-deploy":
+        "cd hypomap-frontend && npm install && npm run build && pm2 reload ecosystem.config.cjs --env production",
+      "pre-setup": "",
+    },
+  },
 };
