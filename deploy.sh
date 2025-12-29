@@ -10,7 +10,7 @@ NC='\033[0m' # No Color
 # Ensure we are in the project directory
 cd "$(dirname "$0")"
 
-echo -e "${YELLOW}=== ssKIND Frontend Deployment ===${NC}"
+echo -e "${YELLOW}=== HypoMap Frontend Deployment ===${NC}"
 echo ""
 
 # Create logs directory if it doesn't exist
@@ -26,7 +26,7 @@ echo -e "${YELLOW}[3/5] Building the application...${NC}"
 npm run build
 
 echo -e "${YELLOW}[4/5] Checking PM2 process...${NC}"
-if pm2 describe sskind-frontend > /dev/null 2>&1; then
+if pm2 describe hypomap-frontend > /dev/null 2>&1; then
     echo -e "${GREEN}Process exists, restarting...${NC}"
     pm2 restart ecosystem.config.cjs --update-env
 else
@@ -41,10 +41,10 @@ echo ""
 echo -e "${GREEN}=== Deployment Complete ===${NC}"
 echo ""
 echo "Status:"
-pm2 status sskind-frontend
+pm2 status hypomap-frontend
 echo ""
 echo -e "Commands:"
-echo -e "  View logs:    ${YELLOW}pm2 logs sskind-frontend${NC}"
-echo -e "  Stop:         ${YELLOW}pm2 stop sskind-frontend${NC}"
-echo -e "  Restart:      ${YELLOW}pm2 restart sskind-frontend${NC}"
-echo -e "  Monitor:      ${YELLOW}pm2 monit${NC}" 
+echo -e "  View logs:    ${YELLOW}pm2 logs hypomap-frontend${NC}"
+echo -e "  Stop:         ${YELLOW}pm2 stop hypomap-frontend${NC}"
+echo -e "  Restart:      ${YELLOW}pm2 restart hypomap-frontend${NC}"
+echo -e "  Monitor:      ${YELLOW}pm2 monit${NC}"
