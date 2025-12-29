@@ -94,7 +94,7 @@ const initNeuralNetwork = () => {
           ctx.beginPath();
           ctx.moveTo(node.x, node.y);
           ctx.lineTo(other.x, other.y);
-          ctx.strokeStyle = `rgba(139, 92, 246, ${lineOpacity})`;
+          ctx.strokeStyle = `rgba(244, 63, 94, ${lineOpacity})`;
           ctx.lineWidth = 1;
           ctx.stroke();
         }
@@ -119,8 +119,8 @@ const initNeuralNetwork = () => {
             node.y,
             nodeRadius * 3
           );
-          gradient.addColorStop(0, `rgba(139, 92, 246, ${glow * 0.3})`);
-          gradient.addColorStop(1, "rgba(139, 92, 246, 0)");
+          gradient.addColorStop(0, `rgba(244, 63, 94, ${glow * 0.3})`);
+          gradient.addColorStop(1, "rgba(244, 63, 94, 0)");
           ctx.beginPath();
           ctx.arc(node.x, node.y, nodeRadius * 3, 0, Math.PI * 2);
           ctx.fillStyle = gradient;
@@ -130,7 +130,7 @@ const initNeuralNetwork = () => {
 
       ctx.beginPath();
       ctx.arc(node.x, node.y, nodeRadius, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(139, 92, 246, ${nodeOpacity})`;
+      ctx.fillStyle = `rgba(244, 63, 94, ${nodeOpacity})`;
       ctx.fill();
     }
     animationFrameId = requestAnimationFrame(drawNetwork);
