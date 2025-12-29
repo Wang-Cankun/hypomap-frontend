@@ -1,69 +1,89 @@
-# ssKIND
+# HypoMap Frontend
 
-## Introduction
-
-**ssKIND (Single-cell and Spatial omics Knowledgebase and AI platform for Neurodegenerative Disease)** is a comprehensive web application designed to facilitate the exploration, analysis, and understanding of single-cell and spatial omics data related to neurodegenerative diseases. It aims to provide researchers and users with an intuitive platform to navigate complex biological datasets, gain insights, and leverage AI-powered assistance for their studies.
+A Vue 3 web application for single-cell RNA-seq analysis with AI-powered hypothesis generation.
 
 ## Features
 
-*   **Interactive Data Table:** Explore a curated collection of single-cell and spatial datasets with advanced filtering (by species, sex, tissue, and disease) and sorting capabilities (e.g., by Data ID). View detailed information for each dataset in a dedicated modal.
-*   **Dynamic Atlas Visualization:** Visualize UMAP projections of integrated single-cell data, interactively explore cell type clusters, and apply filters to refine your view. The right panel provides aggregated statistics about the displayed atlas.
-*   **Knowledge Base:** A searchable repository of articles, tutorials, documentation, and news, including a dedicated section for NDD-related drug resources.
-*   **Analysis Functions:** Access various computational tools for tasks such as differential expression analysis and pathway analysis, with intuitive interfaces to configure and run analyses.
-*   **AI-Powered Chat Assistant:** An integrated, draggable, and resizable chatbox that offers assistance with exploring datasets, interpreting results, and navigating analysis workflows using natural language.
-*   **Intuitive Navigation:** Easily access different sections of the application through a responsive navigation bar, with clickable logos and text elements leading to the home page.
+- **UMAP Visualization**: Interactive scatter plots with cell type clustering and gene expression overlays
+- **CCC Network Graph**: Cell-cell communication network visualization using vis-network
+- **Regulon Network Graph**: Transcription factor regulatory network visualization
+- **AI Assistant**: Chat interface powered by Ollama LLMs for biological interpretation and hypothesis generation
+- **Gene Expression Analysis**: Heatmaps, dotplots, and feature plots
+
+## Tech Stack
+
+- Vue 3 + Composition API
+- Vite
+- Tailwind CSS
+- vis-network for graph visualization
+- marked for markdown rendering
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+### Prerequisites
 
+- Node.js v22+
+- npm
 
-### Customize Configuration
+### Development
 
-
-### Project Setup
-version: node.js v22.11.0 
-you can just run `./deploy.sh`  by pm2
-
-Useful PM2 commands:
-Check status: pm2 status
-View logs: pm2 logs sskind-app
-Restart app: pm2 restart sskind-app
-Stop app: pm2 stop sskind-app
-Delete app: pm2 delete sskind-app
-Monitor: pm2 monit
-
-```sh
+```bash
+# Install dependencies
 npm install
-```
 
-### Compile and Hot-Reload for Development
-
-```sh
+# Start development server (port 9121)
 npm run dev
-```
 
-### Compile and Minify for Production
-
-```sh
+# Build for production
 npm run build
+
+# Preview production build
+npm run preview
 ```
-pm2 start npm --name "ssKIND" -- run start
 
-or 
-## Usage
+### Production Deployment
 
-Once the application is running, you can:
-*   Navigate through the main sections using the top navigation bar.
-*   Explore datasets in the "Data Table" by applying various filters and sorting options.
-*   Interact with the "Atlas" page to visualize single-cell data.
-*   Utilize the "Knowledge Base" for information and resources.
-*   Engage with the AI chat assistant (located in the bottom-right corner) for personalized help and queries.
+```bash
+# Deploy using PM2 (pulls, builds, and restarts)
+npm run deploy
+```
 
-## Contact
+PM2 Commands:
+```bash
+pm2 status                    # Check status
+pm2 logs hypomap-frontend     # View logs
+pm2 restart hypomap-frontend  # Restart
+pm2 stop hypomap-frontend     # Stop
+pm2 monit                     # Monitor
+```
 
-For questions or support, please refer to the "Help" section within the application or reach out to us at [Weidong Wu](weidong.wu@osumc.edu).
+## Project Structure
+
+```
+src/
+├── components/
+│   ├── AIChatSection.vue      # AI chat interface
+│   ├── CCCNetworkGraph.vue    # Cell-cell communication network
+│   ├── RegulonNetworkGraph.vue # TF-target network
+│   └── single-cell/           # UMAP and expression components
+├── views/
+│   ├── AtlasView.vue          # Main analysis view
+│   └── HomeView.vue           # Landing page
+├── composables/               # Shared state and API logic
+└── services/                  # API client
+```
+
+## Configuration
+
+Environment variables in `.env`:
+```
+VITE_API_BASE_URL=http://localhost:9120/hypomap-backend/api/v1
+```
+
+## Related
+
+- [HypoMap Backend](https://github.com/Wang-Cankun/hypomap-backend) - FastAPI backend
 
 ## License
 
-[MIT License]
+MIT
