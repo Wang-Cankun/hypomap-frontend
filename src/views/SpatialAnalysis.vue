@@ -65,7 +65,7 @@
             </span>
             <span
               v-if="spatialMetadata.tissue && spatialMetadata.tissue !== 'N/A'"
-              class="px-3 py-1 bg-violet-100 text-violet-800 rounded-full text-sm font-medium"
+              class="px-3 py-1 bg-pink-100 text-rose-700 rounded-full text-sm font-medium"
             >
               {{ spatialMetadata.tissue }}
             </span>
@@ -2156,21 +2156,21 @@ const spatialContainerStyle = computed(() => ({
 /**
  * Normalize image URL to use the correct API base URL
  * Handles relative URLs and localhost URLs from backend
- * Avoids duplication of /sskind-backend/api/v1 path
+ * Avoids duplication of /hypomap-backend/api/v1 path
  */
 const normalizeImageUrl = (url) => {
   if (!url) return url;
 
-  // Extract the API path suffix (everything after /sskind-backend/api/v1)
+  // Extract the API path suffix (everything after /hypomap-backend/api/v1)
   const extractApiPath = (path) => {
-    const apiPathMatch = path.match(/\/sskind-backend\/api\/v1(\/.*)$/);
+    const apiPathMatch = path.match(/\/hypomap-backend\/api\/v1(\/.*)$/);
     if (apiPathMatch) {
-      return apiPathMatch[1]; // Return path after /sskind-backend/api/v1
+      return apiPathMatch[1]; // Return path after /hypomap-backend/api/v1
     }
-    // If it doesn't contain the full path, check if it starts with /sskind-backend
-    const backendMatch = path.match(/\/sskind-backend(\/.*)$/);
+    // If it doesn't contain the full path, check if it starts with /hypomap-backend
+    const backendMatch = path.match(/\/hypomap-backend(\/.*)$/);
     if (backendMatch) {
-      return backendMatch[1]; // Return path after /sskind-backend
+      return backendMatch[1]; // Return path after /hypomap-backend
     }
     return path; // Return as-is if no match
   };
@@ -2195,12 +2195,12 @@ const normalizeImageUrl = (url) => {
   } catch (e) {
     // If URL parsing fails but contains localhost, try to extract the path
     if (url.includes("localhost") || url.includes("127.0.0.1")) {
-      const match = url.match(/\/sskind-backend\/api\/v1(\/.*)$/);
+      const match = url.match(/\/hypomap-backend\/api\/v1(\/.*)$/);
       if (match) {
         return `${API_BASE_URL}${match[1]}`;
       }
-      // Fallback: try to match just /sskind-backend
-      const backendMatch = url.match(/\/sskind-backend(\/.*)$/);
+      // Fallback: try to match just /hypomap-backend
+      const backendMatch = url.match(/\/hypomap-backend(\/.*)$/);
       if (backendMatch) {
         return `${API_BASE_URL}${backendMatch[1]}`;
       }

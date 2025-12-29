@@ -73,7 +73,7 @@
           </span>
           <span
             v-if="metadata.tissue && metadata.tissue !== 'N/A'"
-            class="px-3 py-1 bg-violet-100 text-violet-800 rounded-full text-sm font-medium"
+            class="px-3 py-1 bg-pink-100 text-rose-700 rounded-full text-sm font-medium"
           >
             {{ metadata.tissue }}
           </span>
@@ -86,7 +86,7 @@
             Human
           </span>
           <span
-            class="px-3 py-1 bg-violet-100 text-violet-800 rounded-full text-sm font-medium"
+            class="px-3 py-1 bg-pink-100 text-rose-700 rounded-full text-sm font-medium"
           >
             Multi-region Brain Atlas
           </span>

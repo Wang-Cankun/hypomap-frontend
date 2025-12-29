@@ -117,7 +117,7 @@ const isExpanded = ref(false);
 const messages = ref([
   {
     type: "bot",
-    text: "Hello! Welcome to ssKIND – your AI-powered assistant for exploring single-cell datasets, interpreting results, and navigating analysis workflows through natural language.",
+    text: "Hello! Welcome to HypoMap – your AI-powered assistant for exploring single-cell datasets, uncovering hidden biological hypotheses, and navigating analysis workflows through natural language.",
   },
 ]);
 const newMessage = ref("");

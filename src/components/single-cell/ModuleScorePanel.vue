@@ -231,7 +231,7 @@ const props = defineProps({
     type: String,
     default:
       import.meta.env.VITE_API_URL ||
-      "http://localhost:9117/sskind-backend/api/v1",
+      "http://localhost:9120/hypomap-backend/api/v1",
   },
   coordinates: { type: Array, default: () => [] },
   secondaryCoordinates: { type: Array, default: () => [] },

@@ -329,24 +329,6 @@ const localSelectedCellTypes = computed({
   set: (val) => emit("update:selectedCellTypes", val),
 });
 
-// Helper function to get color for a cell type
-const getCellTypeColor = (cellType) => {
-  if (!props.cellTypes || props.cellTypes.length === 0) return "#A5A5A5";
-  
-  // First check if it's a known human atlas cell type
-  if (humanAtlasCellTypeColors[cellType]) {
-    return humanAtlasCellTypeColors[cellType];
-  }
-  
-  // Fallback to palette-based coloring
-  const paletteColors =
-    cellTypeColorPalettes[localColorPalette.value] ||
-    cellTypeColorPalettes.default;
-  const index = props.cellTypes.indexOf(cellType);
-  if (index === -1) return "#A5A5A5";
-  return paletteColors[index % paletteColors.length];
-};
-
 // Get the current metadata values array (dynamically based on selected column)
 const getCurrentMetadataValues = () => {
   if (!props.cellMetadata) return null;
@@ -358,6 +340,34 @@ const getCurrentMetadataValues = () => {
 
   // Default to cell_type
   return props.cellMetadata.cell_type;
+};
+
+// Get unique values from current metadata column for color assignment
+const getCurrentMetadataUniqueValues = () => {
+  const metadataValues = getCurrentMetadataValues();
+  if (!metadataValues) return [];
+  return [...new Set(metadataValues)].sort();
+};
+
+// Helper function to get color for a cell type/category
+const getCellTypeColor = (cellType) => {
+  // First check if it's a known human atlas cell type
+  if (humanAtlasCellTypeColors[cellType]) {
+    return humanAtlasCellTypeColors[cellType];
+  }
+
+  // Fallback to palette-based coloring
+  const paletteColors =
+    cellTypeColorPalettes[localColorPalette.value] ||
+    cellTypeColorPalettes.default;
+
+  // Use current metadata unique values for index (handles Pred Label, etc.)
+  const uniqueValues = getCurrentMetadataUniqueValues();
+  if (uniqueValues.length === 0) return "#A5A5A5";
+
+  const index = uniqueValues.indexOf(cellType);
+  if (index === -1) return "#A5A5A5";
+  return paletteColors[index % paletteColors.length];
 };
 
 // Check if a cell is included in the filter
@@ -381,13 +391,22 @@ const generateUMAPData = () => {
   const hasAdvancedFilter = props.filteredCellIndices !== null;
   const filteredSet = hasAdvancedFilter ? new Set(props.filteredCellIndices) : null;
 
+  // Get unique values from current metadata for filtering
+  const currentUniqueValues = getCurrentMetadataUniqueValues();
+  // Check if we're using a custom metadata column (not default cell_type)
+  const isCustomMetadata = props.showMetadataSelector && props.selectedMetadataColumn &&
+    props.selectedMetadataColumn !== 'cell_type';
+
   // Group cells by type/category, separating filtered and excluded
   const cellsByType = {};
   const excludedCells = []; // For grayed-out excluded cells
 
   metadataValues.forEach((type, idx) => {
     const coord = props.umapData.coordinates[idx];
-    const isSelected = localSelectedCellTypes.value.includes(type);
+    // For custom metadata columns, include all values; otherwise use selectedCellTypes filter
+    const isSelected = isCustomMetadata
+      ? currentUniqueValues.includes(type)
+      : localSelectedCellTypes.value.includes(type);
     const isFiltered = !filteredSet || filteredSet.has(idx);
 
     if (isSelected && isFiltered) {
@@ -403,8 +422,10 @@ const generateUMAPData = () => {
   // Create series for each cell type with colors
   const series = Object.entries(cellsByType)
     .sort(([a], [b]) => {
-      const idxA = props.cellTypes.indexOf(a);
-      const idxB = props.cellTypes.indexOf(b);
+      // Use current metadata unique values for sorting
+      const sortValues = isCustomMetadata ? currentUniqueValues : props.cellTypes;
+      const idxA = sortValues.indexOf(a);
+      const idxB = sortValues.indexOf(b);
       if (idxA === -1 && idxB === -1) return 0;
       if (idxA === -1) return 1;
       if (idxB === -1) return -1;
@@ -456,6 +477,16 @@ const totalCellCount = computed(() => {
 const filteredCellCount = computed(() => {
   const metadataValues = getCurrentMetadataValues();
   if (!metadataValues) return 0;
+
+  // Check if using custom metadata column
+  const isCustomMetadata = props.showMetadataSelector && props.selectedMetadataColumn &&
+    props.selectedMetadataColumn !== 'cell_type';
+
+  // For custom metadata, show all cells; otherwise filter by selectedCellTypes
+  if (isCustomMetadata) {
+    return totalCellCount.value;
+  }
+
   if (localSelectedCellTypes.value.length === 0) {
     return totalCellCount.value;
   }
@@ -466,6 +497,14 @@ const filteredCellCount = computed(() => {
 
 // UMAP Chart Option
 const umapOption = computed(() => {
+  // Check if using custom metadata column
+  const isCustomMetadata = props.showMetadataSelector && props.selectedMetadataColumn &&
+    props.selectedMetadataColumn !== 'cell_type';
+  // Use appropriate legend data based on metadata column
+  const legendData = isCustomMetadata
+    ? getCurrentMetadataUniqueValues()
+    : localSelectedCellTypes.value;
+
   return {
     tooltip: {
       trigger: "item",
@@ -475,7 +514,7 @@ const umapOption = computed(() => {
         )}<br/>UMAP2: ${params.value[1].toFixed(2)}`,
     },
     legend: {
-      data: localSelectedCellTypes.value,
+      data: legendData,
       bottom: 10,
       type: "scroll",
     },

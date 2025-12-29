@@ -6,7 +6,7 @@
 import { ref } from "vue";
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:9117/sskind-backend/api/v1";
+  import.meta.env.VITE_API_URL || "http://localhost:9120/hypomap-backend/api/v1";
 
 export function useSpatialApi() {
   const loading = ref(false);

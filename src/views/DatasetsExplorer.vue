@@ -63,7 +63,7 @@
                 Dataset ID
               </div>
               <div class="text-secondary-700 leading-relaxed">
-                Stable identifier for a dataset in ssKIND (e.g., AD001,
+                Stable identifier for a dataset in HypoMap (e.g., AD001,
                 ST024001). Use this to reference or share a specific dataset.
               </div>
             </div>
@@ -915,7 +915,7 @@
                         </span>
                         <span
                           v-if="d.brain_region"
-                          class="px-2 py-1 text-xs font-medium bg-violet-100 text-violet-700 border border-violet-200 rounded-full"
+                          class="px-2 py-1 text-xs font-medium bg-pink-100 text-rose-600 border border-pink-200 rounded-full"
                         >
                           {{ d.brain_region }}
                         </span>
@@ -2411,7 +2411,7 @@ const downloadFilteredDatasetsCSV = () => {
   link.setAttribute("href", url);
   link.setAttribute(
     "download",
-    `ssKIND_datasets_${new Date().toISOString().split("T")[0]}.csv`
+    `HypoMap_datasets_${new Date().toISOString().split("T")[0]}.csv`
   );
   link.style.visibility = "hidden";
   document.body.appendChild(link);
@@ -2422,7 +2422,7 @@ const downloadFilteredDatasetsCSV = () => {
 const downloadDatasetH5AD = (dataset) => {
   // Construct API URL for h5ad download
   const API_BASE_URL =
-    import.meta.env.VITE_API_URL || "http://0.0.0.0:8000/sskind-backend/api/v1";
+    import.meta.env.VITE_API_URL || "http://localhost:9120/hypomap-backend/api/v1";
   const datasetId = dataset.dataset_id || dataset.id;
   const url = `${API_BASE_URL}/datasets/${datasetId}/download/`;
 

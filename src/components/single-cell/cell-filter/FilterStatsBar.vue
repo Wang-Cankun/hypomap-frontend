@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gradient-to-r from-primary-50 to-violet-50 rounded-lg p-4 border border-primary-100">
+  <div class="bg-gradient-to-r from-primary-50 to-pink-50 rounded-lg p-4 border border-primary-100">
     <!-- Stats Display -->
     <div class="flex items-center justify-between mb-2">
       <div class="flex items-center gap-2">

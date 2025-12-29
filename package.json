@@ -16,6 +16,7 @@
     "pm2:status": "pm2 status hypomap-frontend"
   },
   "dependencies": {
+    "@aivue/chatbot": "^2.5.4",
     "@heroicons/vue": "^2.2.0",
     "echarts": "^6.0.0",
     "highlight.js": "^11.11.1",

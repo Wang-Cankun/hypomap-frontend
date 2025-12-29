@@ -3,13 +3,10 @@ import { ref } from "vue";
 import { RouterLink, RouterView } from "vue-router";
 import { useGeneCart } from "@/composables/useGeneCart";
 import { GeneCartDrawer } from "@/components/single-cell";
-import AppIcon from "@/components/icons/AppIcon.vue";
 
 const isMobileMenuOpen = ref(false);
 const isHelpDropdownOpen = ref(false);
 const showHelpDropdown = ref(false);
-const isDemoDropdownOpen = ref(false);
-const showDemoDropdown = ref(false);
 const isGeneCartOpen = ref(false);
 
 // Gene Cart
@@ -31,10 +28,6 @@ const toggleHelpDropdownMobile = () => {
   isHelpDropdownOpen.value = !isHelpDropdownOpen.value;
 };
 
-const toggleDemoDropdown = () => {
-  isDemoDropdownOpen.value = !isDemoDropdownOpen.value;
-};
-
 // Gene Cart handlers
 const handleCartAdd = ({ label, genes, source }) => {
   const geneList = genes
@@ -45,7 +38,6 @@ const handleCartAdd = ({ label, genes, source }) => {
     alert("Please enter at least one gene.");
     return;
   }
-  // addItem expects an object { label, genes, source }
   addItem({
     label: label || "Untitled",
     genes: geneList,
@@ -69,7 +61,6 @@ const handleCartCopy = async (id) => {
     await navigator.clipboard.writeText(genesText);
     alert(`Copied ${item.genes.length} genes to clipboard!`);
   } catch (err) {
-    // Fallback for older browsers
     const textarea = document.createElement("textarea");
     textarea.value = genesText;
     document.body.appendChild(textarea);
@@ -81,17 +72,13 @@ const handleCartCopy = async (id) => {
 };
 
 const handleCartUse = ({ id, target }) => {
-  // For now, just copy genes - the SingleCellAnalysis page will handle specific targets
   const item = getItemById(id);
   if (!item) return;
-
-  // Dispatch a custom event that SingleCellAnalysis can listen to
   window.dispatchEvent(
     new CustomEvent("gene-cart-use", {
       detail: { id, target, genes: item.genes, label: item.label },
     })
   );
-
   isGeneCartOpen.value = false;
 };
 </script>
@@ -99,7 +86,7 @@ const handleCartUse = ({ id, target }) => {
 <template>
   <div class="min-h-screen bg-gradient-to-br from-secondary-50 to-primary-50">
     <nav
-      class="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-primary-600 to-primary-700 shadow-lg backdrop-blur-sm"
+      class="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-rose-500 to-pink-600 shadow-lg backdrop-blur-sm"
     >
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
@@ -107,7 +94,7 @@ const handleCartUse = ({ id, target }) => {
           <div class="flex items-center space-x-4">
             <button
               @click="toggleMobileMenu"
-              class="md:hidden p-2 rounded-lg text-white hover:bg-primary-500 transition-colors duration-200"
+              class="md:hidden p-2 rounded-lg text-white hover:bg-rose-400 transition-colors duration-200"
             >
               <svg
                 class="w-6 h-6"
@@ -127,16 +114,18 @@ const handleCartUse = ({ id, target }) => {
             <!-- Logo and Brand -->
             <router-link to="/" class="flex items-center space-x-3 group">
               <div class="relative">
-                <img
-                  src="/ssKIND_icon.jpg"
-                  alt="ssKIND Logo"
-                  class="h-10 w-10 rounded-lg shadow-md group-hover:shadow-lg transition-shadow duration-200"
-                />
+                <div
+                  class="h-10 w-10 rounded-lg bg-white/20 flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow duration-200"
+                >
+                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                  </svg>
+                </div>
               </div>
               <span
-                class="text-2xl font-bold text-white group-hover:text-accent-200 transition-colors duration-200"
+                class="text-2xl font-bold text-white group-hover:text-pink-200 transition-colors duration-200"
               >
-                ssKIND
+                HypoMap
               </span>
             </router-link>
           </div>
@@ -165,9 +154,9 @@ const handleCartUse = ({ id, target }) => {
             </router-link>
 
             <router-link
-              to="/atlas/human"
+              to="/upload"
               class="nav-link"
-              :class="{ 'nav-link-active': $route.path.startsWith('/atlas') }"
+              :class="{ 'nav-link-active': $route.path === '/upload' }"
             >
               <svg
                 class="w-4 h-4 mr-2"
@@ -179,113 +168,17 @@ const handleCartUse = ({ id, target }) => {
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   stroke-width="2"
-                  d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
+                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
                 ></path>
               </svg>
-              Atlas
+              Upload
             </router-link>
 
-            <!-- Demo Dropdown -->
-            <div
-              class="relative group"
-              @mouseenter="showDemoDropdown = true"
-              @mouseleave="showDemoDropdown = false"
+            <router-link
+              to="/demo"
+              class="nav-link"
+              :class="{ 'nav-link-active': $route.path === '/demo' }"
             >
-              <button class="nav-link flex items-center">
-                <svg
-                  class="w-4 h-4 mr-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                  ></path>
-                </svg>
-                Demo
-                <svg
-                  class="w-4 h-4 ml-1 transition-transform duration-200 group-hover:rotate-180"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M19 9l-7 7-7-7"
-                  ></path>
-                </svg>
-              </button>
-
-              <div v-if="showDemoDropdown" class="dropdown-menu">
-                <router-link
-                  to="/demo/scrna"
-                  class="dropdown-item"
-                  @click="showDemoDropdown = false"
-                >
-                  <svg
-                    class="w-4 h-4 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                    ></path>
-                  </svg>
-                  scRNA-seq Demo
-                </router-link>
-                <router-link
-                  to="/demo/visium"
-                  class="dropdown-item"
-                  @click="showDemoDropdown = false"
-                >
-                  <svg
-                    class="w-4 h-4 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
-                    ></path>
-                  </svg>
-                  Spatial Visium Demo
-                </router-link>
-                <router-link
-                  to="/demo/xenium"
-                  class="dropdown-item"
-                  @click="showDemoDropdown = false"
-                >
-                  <svg
-                    class="w-4 h-4 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
-                    ></path>
-                  </svg>
-                  Xenium Demo
-                </router-link>
-              </div>
-            </div>
-
-            <router-link to="/datasets" class="nav-link">
               <svg
                 class="w-4 h-4 mr-2"
                 fill="none"
@@ -296,27 +189,10 @@ const handleCartUse = ({ id, target }) => {
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   stroke-width="2"
-                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                  d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
                 ></path>
               </svg>
-              Datasets
-            </router-link>
-
-            <router-link to="/knowledge" class="nav-link">
-              <svg
-                class="w-4 h-4 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                ></path>
-              </svg>
-              Knowledge
+              Demo
             </router-link>
 
             <!-- Help Dropdown -->
@@ -466,24 +342,24 @@ const handleCartUse = ({ id, target }) => {
     <!-- Mobile Menu Overlay -->
     <div
       v-if="isMobileMenuOpen"
-      class="fixed inset-0 z-50 bg-gradient-to-br from-primary-600 to-primary-700"
+      class="fixed inset-0 z-50 bg-gradient-to-br from-rose-500 to-pink-600"
     >
       <div class="flex flex-col h-full">
         <!-- Mobile Header -->
         <div
-          class="flex justify-between items-center p-6 border-b border-primary-500"
+          class="flex justify-between items-center p-6 border-b border-rose-400"
         >
           <div class="flex items-center space-x-3">
-            <img
-              src="/ssKIND_icon.jpg"
-              alt="ssKIND Logo"
-              class="h-8 w-8 rounded-lg"
-            />
-            <span class="text-2xl font-bold text-white">ssKIND</span>
+            <div class="h-8 w-8 rounded-lg bg-white/20 flex items-center justify-center">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+              </svg>
+            </div>
+            <span class="text-2xl font-bold text-white">HypoMap</span>
           </div>
           <button
             @click="toggleMobileMenu"
-            class="p-2 rounded-lg text-white hover:bg-primary-500 transition-colors duration-200"
+            class="p-2 rounded-lg text-white hover:bg-rose-400 transition-colors duration-200"
           >
             <svg
               class="w-6 h-6"
@@ -521,117 +397,7 @@ const handleCartUse = ({ id, target }) => {
           </router-link>
 
           <router-link
-            to="/atlas/human"
-            class="mobile-nav-link"
-            @click="toggleMobileMenu"
-          >
-            <AppIcon name="dna" size="md" class="mr-3" /> Atlas
-          </router-link>
-
-          <!-- Demo Mobile Dropdown -->
-          <div class="space-y-1">
-            <button
-              @click="toggleDemoDropdown"
-              class="mobile-nav-link w-full flex items-center justify-between"
-            >
-              <div class="flex items-center">
-                <svg
-                  class="w-5 h-5 mr-3"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                  ></path>
-                </svg>
-                Demo
-              </div>
-              <svg
-                class="w-4 h-4 transition-transform duration-200"
-                :class="{ 'rotate-180': isDemoDropdownOpen }"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                ></path>
-              </svg>
-            </button>
-
-            <div v-if="isDemoDropdownOpen" class="ml-8 space-y-1">
-              <router-link
-                to="/demo/scrna"
-                class="mobile-nav-sub-link"
-                @click="toggleMobileMenu"
-              >
-                <svg
-                  class="w-4 h-4 mr-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                  ></path>
-                </svg>
-                scRNA-seq Demo
-              </router-link>
-              <router-link
-                to="/demo/visium"
-                class="mobile-nav-sub-link"
-                @click="toggleMobileMenu"
-              >
-                <svg
-                  class="w-4 h-4 mr-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
-                  ></path>
-                </svg>
-                Spatial Visium Demo
-              </router-link>
-              <router-link
-                to="/demo/xenium"
-                class="mobile-nav-sub-link"
-                @click="toggleMobileMenu"
-              >
-                <svg
-                  class="w-4 h-4 mr-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
-                  ></path>
-                </svg>
-                Xenium Demo
-              </router-link>
-            </div>
-          </div>
-
-          <router-link
-            to="/datasets"
+            to="/upload"
             class="mobile-nav-link"
             @click="toggleMobileMenu"
           >
@@ -645,14 +411,14 @@ const handleCartUse = ({ id, target }) => {
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 stroke-width="2"
-                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
               ></path>
             </svg>
-            Datasets
+            Upload
           </router-link>
 
           <router-link
-            to="/knowledge"
+            to="/demo"
             class="mobile-nav-link"
             @click="toggleMobileMenu"
           >
@@ -666,10 +432,10 @@ const handleCartUse = ({ id, target }) => {
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 stroke-width="2"
-                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
               ></path>
             </svg>
-            Knowledge
+            Demo
           </router-link>
 
           <!-- Help Mobile Dropdown -->
@@ -716,19 +482,6 @@ const handleCartUse = ({ id, target }) => {
                 class="mobile-nav-sub-link"
                 @click="toggleMobileMenu"
               >
-                <svg
-                  class="w-4 h-4 mr-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                  ></path>
-                </svg>
                 Methods
               </router-link>
               <router-link
@@ -736,19 +489,6 @@ const handleCartUse = ({ id, target }) => {
                 class="mobile-nav-sub-link"
                 @click="toggleMobileMenu"
               >
-                <svg
-                  class="w-4 h-4 mr-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                  ></path>
-                </svg>
                 Usage
               </router-link>
               <router-link
@@ -756,19 +496,6 @@ const handleCartUse = ({ id, target }) => {
                 class="mobile-nav-sub-link"
                 @click="toggleMobileMenu"
               >
-                <svg
-                  class="w-4 h-4 mr-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  ></path>
-                </svg>
                 FAQ
               </router-link>
               <router-link
@@ -776,19 +503,6 @@ const handleCartUse = ({ id, target }) => {
                 class="mobile-nav-sub-link"
                 @click="toggleMobileMenu"
               >
-                <svg
-                  class="w-4 h-4 mr-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  ></path>
-                </svg>
                 Contact
               </router-link>
               <router-link
@@ -796,19 +510,6 @@ const handleCartUse = ({ id, target }) => {
                 class="mobile-nav-sub-link"
                 @click="toggleMobileMenu"
               >
-                <svg
-                  class="w-4 h-4 mr-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2.5 2.5 0 00-2.5-2.5h-2.5"
-                  ></path>
-                </svg>
                 News
               </router-link>
             </div>
@@ -825,14 +526,13 @@ const handleCartUse = ({ id, target }) => {
     <!-- Floating Gene Cart Button -->
     <button
       @click="isGeneCartOpen = true"
-      class="fixed bottom-6 right-6 z-40 flex items-center gap-2 bg-gradient-to-r from-primary-600 to-primary-700 text-white px-4 py-3 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 group"
+      class="fixed bottom-6 right-6 z-40 flex items-center gap-2 bg-gradient-to-r from-rose-500 to-pink-600 text-white px-4 py-3 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 group"
       :class="{
         'pr-3': cartItems.length > 0,
         'gene-cart-pulse': cartItems.length > 0,
       }"
       title="Open Gene Cart"
     >
-      <!-- DNA/Gene Icon -->
       <svg
         class="w-5 h-5"
         fill="none"
@@ -849,16 +549,15 @@ const handleCartUse = ({ id, target }) => {
       <span class="font-medium text-sm group-hover:block hidden sm:block"
         >Gene Cart</span
       >
-      <!-- Badge -->
       <span
         v-if="cartItems.length > 0"
-        class="flex items-center justify-center min-w-[22px] h-[22px] bg-accent-400 text-primary-900 text-xs font-bold rounded-full px-1.5"
+        class="flex items-center justify-center min-w-[22px] h-[22px] bg-amber-400 text-pink-900 text-xs font-bold rounded-full px-1.5"
       >
         {{ cartItems.length }}
       </span>
     </button>
 
-    <!-- Gene Cart Drawer (Global) -->
+    <!-- Gene Cart Drawer -->
     <GeneCartDrawer
       :open="isGeneCartOpen"
       :items="cartItems"
@@ -875,11 +574,11 @@ const handleCartUse = ({ id, target }) => {
 <style>
 /* Custom Tailwind Components */
 .nav-link {
-  @apply text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:bg-primary-500 hover:text-white flex items-center;
+  @apply text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:bg-rose-400 hover:text-white flex items-center;
 }
 
 .nav-link-active {
-  @apply bg-primary-500 text-white shadow-md;
+  @apply bg-rose-400 text-white shadow-md;
 }
 
 .dropdown-menu {
@@ -891,11 +590,11 @@ const handleCartUse = ({ id, target }) => {
 }
 
 .mobile-nav-link {
-  @apply block text-white px-4 py-3 rounded-lg font-medium transition-all duration-200 hover:bg-primary-500 hover:text-white flex items-center text-lg;
+  @apply block text-white px-4 py-3 rounded-lg font-medium transition-all duration-200 hover:bg-rose-400 hover:text-white flex items-center text-lg;
 }
 
 .mobile-nav-sub-link {
-  @apply block text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:bg-primary-500 hover:text-white flex items-center text-base;
+  @apply block text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:bg-rose-400 hover:text-white flex items-center text-base;
 }
 
 /* Custom animations */
@@ -917,24 +616,6 @@ const handleCartUse = ({ id, target }) => {
 /* Smooth transitions for dropdowns */
 .group:hover .dropdown-menu {
   @apply opacity-100 visible;
-}
-
-/* Custom scrollbar for mobile menu */
-.mobile-nav-links::-webkit-scrollbar {
-  width: 4px;
-}
-
-.mobile-nav-links::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.mobile-nav-links::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 2px;
-}
-
-.mobile-nav-links::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.5);
 }
 
 /* Floating Gene Cart Button pulse animation */
@@ -960,8 +641,8 @@ const handleCartUse = ({ id, target }) => {
   border-radius: 9999px;
   background: linear-gradient(
     135deg,
-    var(--color-primary-400),
-    var(--color-accent-400)
+    var(--color-rose-300),
+    var(--color-amber-400)
   );
   z-index: -1;
   animation: pulse-ring 2s ease-in-out infinite;

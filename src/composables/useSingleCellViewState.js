@@ -28,7 +28,7 @@ export function useSingleCellViewState(initialDatasetId = null) {
 
   // Visualization settings
   const pointSize = ref(3);
-  const colorPalette = ref("default");
+  const colorPalette = ref("vibrant");
   const geneExpressionPalette = ref("reds");
 
   // Tool switching

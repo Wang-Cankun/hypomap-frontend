@@ -301,7 +301,7 @@ const props = defineProps({
     type: String,
     default:
       import.meta.env.VITE_API_URL ||
-      "http://localhost:9117/sskind-backend/api/v1",
+      "http://localhost:9120/hypomap-backend/api/v1",
   },
   fetchExpression: { type: Function, default: null },
   searchGenes: { type: Function, default: null },

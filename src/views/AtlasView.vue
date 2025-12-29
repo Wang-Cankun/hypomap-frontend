@@ -1057,6 +1057,58 @@
               @fetch-metadata-values="fetchMetadataColumnValues"
             />
           </div>
+
+          <!-- CCC Network Analysis -->
+          <div v-if="activeTool === 'ccc'" class="h-full flex flex-col">
+            <div class="mb-4">
+              <h2 class="text-xl font-bold text-gray-900 mb-2">
+                Cell-Cell Communication Network
+              </h2>
+              <p class="text-sm text-gray-600">
+                Interactive visualization of ligand-receptor interactions between cell clusters.
+                Filter by pathway, adjust probability thresholds, and click on nodes/edges for details.
+              </p>
+            </div>
+            <div class="flex-1 bg-white rounded-xl border border-gray-200 overflow-hidden">
+              <CCCNetworkGraph
+                :dataset-id="datasetId"
+                @node-click="handleCCCNodeClick"
+                @edge-click="handleCCCEdgeClick"
+              />
+            </div>
+          </div>
+
+          <!-- Regulon Network Analysis -->
+          <div v-if="activeTool === 'regulon'" class="h-full flex flex-col">
+            <div class="mb-4">
+              <h2 class="text-xl font-bold text-gray-900 mb-2">
+                Transcription Factor Regulon Network
+              </h2>
+              <p class="text-sm text-gray-600">
+                Explore TF-target gene regulatory networks. Select a cluster to view its active transcription
+                factors and their target genes. Click on TFs to filter, or search for specific genes.
+              </p>
+            </div>
+            <div class="flex-1 bg-white rounded-xl border border-gray-200 overflow-hidden">
+              <RegulonNetworkGraph
+                :dataset-id="datasetId"
+                @tf-select="handleTFSelect"
+                @gene-select="handleGeneSelect"
+                @view-expression="handleViewExpression"
+              />
+            </div>
+          </div>
+
+          <!-- AI Assistant -->
+          <div v-if="activeTool === 'ai-chat'" class="h-full flex flex-col">
+            <div class="flex-1 bg-white rounded-xl border border-gray-200 overflow-hidden">
+              <AIChatSection
+                :dataset-id="datasetId"
+                :clusters="cellTypes"
+                :api-base-url="API_BASE_URL"
+              />
+            </div>
+          </div>
         </div>
       </main>
 
@@ -1089,6 +1141,7 @@
         @delete-preset="deletePreset"
       />
     </div>
+
   </div>
 </template>
 
@@ -1137,6 +1190,9 @@ import AnalysisToolIcons from "@/components/single-cell/icons/AnalysisToolIcons.
 import DownloadButtons from "@/components/single-cell/DownloadButtons.vue";
 import CellFilterPanel from "@/components/single-cell/CellFilterPanel.vue";
 import AppIcon from "@/components/icons/AppIcon.vue";
+import CCCNetworkGraph from "@/components/CCCNetworkGraph.vue";
+import RegulonNetworkGraph from "@/components/RegulonNetworkGraph.vue";
+import AIChatSection from "@/components/AIChatSection.vue";
 
 // Atlas View - dedicated view for atlas datasets
 // No isAtlasMode prop needed - this is always atlas mode
@@ -1180,7 +1236,7 @@ const backLinkText = computed(() =>
 
 // API Configuration
 const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:9117/sskind-backend/api/v1";
+  import.meta.env.VITE_API_URL || "http://localhost:9120/hypomap-backend/api/v1";
 
 // Use composables for state management
 const viewState = useSingleCellViewState(initialDatasetId);
@@ -1371,6 +1427,24 @@ const tools = [
     name: "DEG & Pathway",
     icon: AnalysisToolIcons,
     iconName: "deg-pathway",
+  },
+  {
+    id: "ccc",
+    name: "CCC Network",
+    icon: AnalysisToolIcons,
+    iconName: "cell-communication",
+  },
+  {
+    id: "regulon",
+    name: "Regulon",
+    icon: AnalysisToolIcons,
+    iconName: "regulon",
+  },
+  {
+    id: "ai-chat",
+    name: "AI Assistant",
+    icon: AnalysisToolIcons,
+    iconName: "ai-chat",
   },
 ];
 
@@ -1996,6 +2070,45 @@ const handleGeneCartUse = (event) => {
     heatmapSettings.value.geneList = genes.join("\n");
     geneExpressionTab.value = "heatmap";
   }
+};
+
+// CCC Network event handlers
+const handleCCCNodeClick = ({ nodeId }) => {
+  console.log('CCC node clicked:', nodeId);
+  // Could navigate to cell type view or show details
+};
+
+const handleCCCEdgeClick = ({ edge }) => {
+  console.log('CCC edge clicked:', edge);
+  // Could show interaction details in a modal
+};
+
+// Regulon Network event handlers
+const handleTFSelect = ({ tf }) => {
+  console.log('TF selected:', tf);
+  // Could search for TF in gene expression
+  selectedGene.value = tf;
+  activeTool.value = 'gene-expression';
+  geneExpressionTab.value = 'single';
+  fetchGeneExpression(tf);
+};
+
+const handleGeneSelect = ({ gene }) => {
+  console.log('Gene selected:', gene);
+  // Navigate to gene expression view
+  selectedGene.value = gene;
+  activeTool.value = 'gene-expression';
+  geneExpressionTab.value = 'single';
+  fetchGeneExpression(gene);
+};
+
+// Handle view expression from gene info panel
+const handleViewExpression = ({ gene }) => {
+  console.log('View expression for:', gene);
+  selectedGene.value = gene;
+  activeTool.value = 'gene-expression';
+  geneExpressionTab.value = 'single';
+  fetchGeneExpression(gene);
 };
 
 onMounted(async () => {

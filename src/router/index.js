@@ -1,8 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import AtlasView from "../views/AtlasView.vue";
-import DatasetsExplorer from "../views/DatasetsExplorer.vue";
-import SpatialView from "../views/SpatialView.vue";
 import HelpView from "../views/HelpView.vue";
 
 const routes = [
@@ -24,85 +21,11 @@ const routes = [
     meta: { title: "Dataset Analysis" },
   },
   {
-    path: "/atlas",
-    redirect: "/atlas/human",
-  },
-  {
-    path: "/atlas/human",
-    name: "HumanAtlas",
+    path: "/demo",
+    name: "Demo",
     component: () => import("@/views/AtlasView.vue"),
-    props: { defaultDatasetId: "human_subset" },
-    meta: { title: "Human Atlas" },
-  },
-  {
-    path: "/atlas/scrna",
-    component: () => import("@/layouts/AtlasLayout.vue"),
-    children: [
-      {
-        path: "",
-        name: "AtlasSingleCell",
-        component: () => import("@/views/AtlasView.vue"),
-        meta: { title: "scRNA-seq" },
-      },
-    ],
-  },
-  {
-    path: "/atlas/spatial",
-    component: () => import("@/layouts/AtlasLayout.vue"),
-    children: [
-      {
-        path: "",
-        name: "AtlasSpatial",
-        component: () => import("@/views/SpatialView.vue"),
-        meta: { title: "Spatial transcriptomics" },
-      },
-    ],
-  },
-  {
-    path: "/atlas/analysis/:id",
-    name: "SingleCellAnalysis",
-    component: () => import("@/views/SingleCellAnalysis.vue"),
-    meta: { title: "Single-Cell Analysis" },
-  },
-  {
-    path: "/functions",
-    redirect: "/demo/scrna",
-  },
-  {
-    path: "/demo/scrna",
-    name: "DemoScRNA",
-    component: () => import("@/views/SingleCellAnalysis.vue"),
-    props: { defaultDatasetId: "AD093044", isAtlasMode: false },
-    meta: { title: "scRNA-seq Demo" },
-  },
-  {
-    path: "/demo/visium",
-    name: "DemoVisium",
-    component: () => import("@/views/SpatialAnalysis.vue"),
-    props: { defaultDatasetId: "ST024001", datasetType: "visium" },
-    meta: { title: "Spatial Visium Demo" },
-  },
-  {
-    path: "/demo/xenium",
-    name: "DemoXenium",
-    component: () => import("@/views/SpatialAnalysis.vue"),
-    props: { defaultDatasetId: "ST034001", datasetType: "xenium" },
-    meta: { title: "Xenium Demo" },
-  },
-  {
-    path: "/datasets",
-    name: "Datasets",
-    component: DatasetsExplorer,
-  },
-  {
-    path: "/sskind/datasets",
-    name: "DatasetsSskind",
-    component: DatasetsExplorer,
-  },
-  {
-    path: "/knowledge",
-    name: "Knowledge",
-    component: () => import("@/views/KnowledgeGraphView.vue"),
+    props: { defaultDatasetId: "hypomap_demo" },
+    meta: { title: "HypoMap Demo" },
   },
   {
     path: "/help",
@@ -113,7 +36,7 @@ const routes = [
       {
         path: ":topic",
         name: "HelpTopic",
-        component: HelpView, // Still points to HelpView, but now it reads the :topic param
+        component: HelpView,
       },
     ],
   },

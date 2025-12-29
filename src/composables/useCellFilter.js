@@ -6,7 +6,7 @@
 
 import { ref, computed, watch } from 'vue';
 
-const STORAGE_KEY = 'sskind_cell_filter_presets';
+const STORAGE_KEY = 'hypomap_cell_filter_presets';
 
 /**
  * Generate a unique ID for filters
